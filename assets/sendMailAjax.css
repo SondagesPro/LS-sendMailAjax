@@ -1,0 +1,12 @@
+
+/*
+.dialog-sendmailajax{
+    max-width:100;
+    min-width:20em;
+}
+*/
+.sendmailajax-list{padding:0;margin:0;list-style:none;height:7em;overflow-y:scroll;}
+.sendmailajax-list li{
+list-style:none;padding:0;margin:0 0 2px;
+}
+#sendmailajax .alert{margin:2px 0}
