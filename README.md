@@ -1,4 +1,4 @@
-#Send token email via Ajax#
+# Send token email via Ajax
 Allow to send token email one by one with one click.
 
 ## Installation
@@ -11,11 +11,11 @@ Allow to send token email one by one with one click.
 - Get the file and uncompress it
 - Move the file included to plugins/sendMailAjax directory
 
-##Home page & Copyright
+## Home page & Copyright
 - HomePage <http://extensions.sondages.pro/>
 - Copyright © 2015 Denis Chenu <http://sondages.pro>
 - Licence : GNU General Affero Public License <https://www.gnu.org/licenses/agpl-3.0.html>
 
-##Support
+## Support
 - Issues <https://gitlab.com/Shnoulle-LimeSurvey-plugin/sendMailAjax/issues>
 - Professional support <http://extensions.sondages.pro/1>
