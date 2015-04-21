@@ -32,17 +32,23 @@ class sendMailAjax extends PluginBase {
         $this->subscribe('newSurveySettings');
     }
 
+    /**
+    * Keep the survey id for firect request function 
+    * @access private
+    * @var integer
+    */
     private $iSurveyId;
+
+    /**
+    * newDirectRequest redirecting to call function
+    */
     public function newDirectRequest()
     {
-        //~ Yii::app()->db->schema->getTables();
-        //~ Yii::app()->db->schema->refresh();
         $oEvent = $this->event;
         $sFunction=$oEvent->get('function');
         if ($oEvent->get('target') != get_class())
             return;
-        //~ $this->surveyId=$this->api->getRequest('surveyid');
-        //~ tracevar($this->navData);
+
         $this->iSurveyId=$iSurveyId=$this->api->getRequest()->getParam('surveyid');
         $oSurvey=Survey::model()->findByPK($iSurveyId);
         if(!$oSurvey)
@@ -54,7 +60,7 @@ class sendMailAjax extends PluginBase {
         if($oSurvey->active!="Y")
             throw new CHttpException(404, gt("The survey seem’s inactive."));
 
-        $sType=$sType=$this->api->getRequest()->getParam('type');
+        $sType=$this->api->getRequest()->getParam('type');
         if(!in_array($sType,array('remind','invite')))
             throw new CHttpException(500, gt("Unknow type"));
         switch ($sFunction)
@@ -70,6 +76,9 @@ class sendMailAjax extends PluginBase {
         }
     }
 
+    /**
+    * Show the settings and the link
+    */
     public function beforeSurveySettings()
     {
         $oEvent = $this->event;
@@ -118,6 +127,9 @@ class sendMailAjax extends PluginBase {
         }
     }
 
+    /**
+    * Save the settings
+    */
     public function newSurveySettings()
     {
         $event = $this->event;
@@ -131,12 +143,16 @@ class sendMailAjax extends PluginBase {
         }
     }
 
+    /**
+    * Construct and render the confirm box
+    * @param string $sType : email type to send
+    */
     private function actionConfirm($sType)
     {
         $oEvent=$this->event;
         Yii::app()->controller->layout='bare'; // bare don't have any HTML
         Yii::setPathOfAlias('sendmailajaxViews', dirname(__FILE__) . '/views/');
-        //~ die(Yii::getPathOfAlias('sendmailajaxViews'));
+
         $oCriteria=$this->getBaseCriteria($sType);
 
         $renderData['count']=TokenDynamic::model($this->iSurveyId)->count($oCriteria);
@@ -150,7 +166,7 @@ class sendMailAjax extends PluginBase {
                 $renderData['confirminfo']=gt('Send email reminder');
                 $renderData['confirminfo'].=CHtml::tag('ul',array('class'=>'alert alert-info'),"",false);
                 $renderData['confirminfo'].=CHtml::tag('li',array(),sprintf(gt('Minimum day after last email : %s'),$this->get('mindaydelay', 'Survey', $this->iSurveyId,'1')));
-                $renderData['confirminfo'].=CHtml::tag('li',array(),sprintf(gt('Don’t send remind if user have already receive %s reminder'),$this->get('maxremind', 'Survey', $this->iSurveyId,'0')));
+                $renderData['confirminfo'].=CHtml::tag('li',array(),sprintf(gt('Do not send remind if user have already receive %s reminder'),$this->get('maxremind', 'Survey', $this->iSurveyId,'0')));
                 $renderData['confirminfo'].=CHtml::closeTag('ul');
                 $renderData['buttonText']=gt('Send Reminders');
                 break;
@@ -162,6 +178,10 @@ class sendMailAjax extends PluginBase {
         echo $content;
     }
 
+    /**
+    * Send action, and construct the json
+    * @param string $sType : email type to send
+    */
     private function actionSend($sType)
     {
         $iNextToken=$this->api->getRequest()->getParam('tokenid');
@@ -203,14 +223,24 @@ class sendMailAjax extends PluginBase {
         $this->renderJson($aData);
     }
 
+    /**
+    * Render a application/json 
+    * @param array $aData : array to render
+    */
     private function renderJson($aData)
     {
             Yii::import('application.helpers.viewHelper');
             viewHelper::disableHtmlLogging();
-            header('Content-type: application/json');
+            header('Content-type: application/json; charset=utf-8');
             echo json_encode($aData);
             Yii::app()->end();
     }
+
+    /**
+    * Construct the criteria needed for all find
+    * @param string $sType : email type to send
+    * @return object criteria (@see http://www.yiiframework.com/doc/api/1.1/CDbCriteria ).
+    */
     private function getBaseCriteria($sType)
     {
         $oCriteria= new CDbCriteria();
@@ -226,8 +256,6 @@ class sendMailAjax extends PluginBase {
         $oCriteria->compare('usesleft',">0");
         $oCriteria->addCondition("blacklisted IS NULL OR blacklisted='' ");
 
-        //~ $oCriteria->compare('validuntil',"<".$dToday);
-
         switch ($sType)
         {
             case 'invite':
@@ -237,20 +265,20 @@ class sendMailAjax extends PluginBase {
                 $oCriteria->addCondition("sent !='N' or sent!=''");
                 $iMinDayDelay=intval($this->get('mindaydelay', 'Survey', $this->iSurveyId,'1'));
                 $iMaxRemind=intval($this->get('maxremind', 'Survey', $this->iSurveyId,null));
-                //~ if($iMinDayDelay>0)
-                //~ {
-                    //~ $dDateCompare = dateShift(
-                        //~ date("Y-m-d H:i:s", time() - 86400 * $iMinDayDelay),
-                        //~ "Y-m-d H:i:s", Yii::app()->getConfig("timeadjust")
-                    //~ );
-                    //~ $oCriteria->addCondition("(remindersent !='N' AND sent < :dateSent) OR remindersent < :dateReminder");
-                    //~ $oCriteria->params=array_merge($oCriteria->params,
-                        //~ array(
-                            //~ ':dateSent'=>$dDateCompare,
-                            //~ ':dateReminder'=>$dDateCompare,
-                        //~ )
-                    //~ );
-                //~ }
+                if($iMinDayDelay>0)
+                {
+                    $dDateCompare = dateShift(
+                        date("Y-m-d H:i:s", time() - 86400 * $iMinDayDelay),
+                        "Y-m-d H:i:s", Yii::app()->getConfig("timeadjust")
+                    );
+                    $oCriteria->addCondition("(remindersent ='N' AND sent < :dateSent) OR remindersent < :dateReminder");
+                    $oCriteria->params=array_merge($oCriteria->params,
+                        array(
+                            ':dateSent'=>$dDateCompare,
+                            ':dateReminder'=>$dDateCompare,
+                        )
+                    );
+                }
                 if($iMaxRemind>0)
                 {
                     $oCriteria->addCondition("remindercount < :remindercount");
@@ -269,9 +297,15 @@ class sendMailAjax extends PluginBase {
             )
         );
 
-        return $aCriteria[$sType]=$oCriteria;
+        return $oCriteria;
     }
 
+    /**
+    * Send an email to this token
+    * @param object $oToken : the token
+    * @param string $sType : email type to send
+    * @return array (status and message)
+    */
     private function sendMail($oToken,$sType)
     {
         $returnData=array(
@@ -405,11 +439,11 @@ class sendMailAjax extends PluginBase {
             switch($sType)
             {
                 case 'invite':
-                    $returnData['message']=gT("Invitation sent to:")." {$oToken->tid} : {$oToken->firstname} {$oToken->lastname} <{$oToken->email}>";
+                    $returnData['message']=gT("Invitation sent to:")." {$oToken->tid} : {$oToken->firstname} {$oToken->lastname} &lt{$oToken->email}&gt";
                     $oToken->sent = dateShift(date("Y-m-d H:i:s"), "Y-m-d H:i", Yii::app()->getConfig("timeadjust"));
                     break;
                 case 'remind':
-                    $returnData['message']=gT("Reminder sent to:")." {$oToken->tid} : {$oToken->firstname} {$oToken->lastname} <{$oToken->email}>";
+                    $returnData['message']=gT("Reminder sent to:")." {$oToken->tid} : {$oToken->firstname} {$oToken->lastname} &lt{$oToken->email} &gt";
                     $oToken->remindersent = dateShift(date("Y-m-d H:i:s"), "Y-m-d H:i", Yii::app()->getConfig("timeadjust"));
                     $oToken->remindercount++;
                     break;
