@@ -5,13 +5,13 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.1
+ * @version 0.1.1
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,7 +24,7 @@ class sendMailAjax extends PluginBase {
 
   static protected $description = 'Send email one by one with ajax.';
   static protected $name = 'sendMailAjax';
-  
+
     public function __construct(PluginManager $manager, $id) {
         parent::__construct($manager, $id);
         $this->subscribe('newDirectRequest');
@@ -33,7 +33,7 @@ class sendMailAjax extends PluginBase {
     }
 
     /**
-    * Keep the survey id for firect request function 
+    * Keep the survey id for firect request function
     * @access private
     * @var integer
     */
@@ -209,7 +209,7 @@ class sendMailAjax extends PluginBase {
         if($oToken)
         {
             $aData=array_replace($aData,$this->sendMail($oToken,$sType));
-            
+
             if(!$iNextToken)
                 $oNextCriteria->compare('tid',">".$oToken->tid);
         }
@@ -224,7 +224,7 @@ class sendMailAjax extends PluginBase {
     }
 
     /**
-    * Render a application/json 
+    * Render a application/json
     * @param array $aData : array to render
     */
     private function renderJson($aData)
@@ -313,6 +313,7 @@ class sendMailAjax extends PluginBase {
             'message'=>'',
         );
         $oSurvey=Survey::model()->findByPk($this->iSurveyId);
+        Yii::app()->setConfig('surveyID',$iSurvey);
         $aSurveyLangs = $oSurvey->getAllLanguages();
         $aTokenFields = getTokenFieldsAndNames($this->iSurveyId, true);
         $bHtml = $oSurvey->htmlemail=='Y';
