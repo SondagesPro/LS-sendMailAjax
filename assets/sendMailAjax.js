@@ -8,8 +8,20 @@ $(document).on('click','a.popup-sendmailajax',function(event){
   dialogName = '#dialogsendmailajax';
   contentUrl=$(this).attr('href');
   dialogTitle=$(this).text();
-  $('#sendmailajax').dialog('destroy').remove();
-  
+  if($("#admin-notification-modal").length)// 2.50
+  {
+    modal=$("#admin-notification-modal");
+    originalModalHtml=$("#admin-notification-modal").html();
+    $(modal).find('.modal-title').text(dialogTitle);
+    $(modal).modal('show');
+    $(modal).find(".modal-body").load(contentUrl);
+    $(modal).on('hidden.bs.modal', function (e) {
+      $(modal).html(originalModalHtml);
+    })
+  }
+  else // 2.06 or old 2.50
+  {
+    $('#sendmailajax').dialog('destroy').remove();
     $("<div id='sendmailajax'>").dialog({
         modal: true,
         open: function ()
@@ -23,6 +35,7 @@ $(document).on('click','a.popup-sendmailajax',function(event){
             $(this).remove();
         }
     });
+  }
 });
 $(document).on('click','a#launch-email',function(event){
   var jsonurl=$(this).attr('rel');
@@ -35,22 +48,22 @@ $(document).on('click','a#launch-email',function(event){
 * @param {integer} tokenid : The token id
 */
 function loopSendEmail(jsonurl,tokenid) {
-  
-  if($("#sendmailajax").length>0)// Don't send if user click on 'Cancel'
+  if($(".sendmailajax-list").length>0)// Don't send if user click on 'Cancel'
   {
     $.ajax({
       url: jsonurl,
       dataType : 'json',
         data : {'tokenid': tokenid},
         success: function (data) {
-          $("#sendmailajax .sendmailajax-list").prepend("<li style='display:none'>"+data.message+"</li>");
-          $("#sendmailajax .sendmailajax-list :first-child").slideDown(500);
+          $(".sendmailajax-list").prepend("<li style='display:none'>"+data.message+"</li>");
+          $(".sendmailajax-list :first-child").slideDown(500);
           //$("#sendmailajax .sendmailajax-list :nth-child(6)").slideUp(500,function() { });
             if (data.next) {
                 loopSendEmail(jsonurl,data.next);
             } else {
-              $("#sendmailajax").closest(".ui-dialog").find(" .ui-dialog-buttonset .ui-button-text").html("Done");
-              $("#sendmailajax .sendmailajax-list").prepend("<li><strong>Done</strong></li>");
+              $(".sendmailajax-list").closest(".ui-dialog").find(".ui-dialog-buttonset .ui-button-text").html("Done"); // 2.06
+              $(".sendmailajax-list").closest(".modal-dialog").find(".btn-default").html("Done"); // 2.50
+              $(".sendmailajax-list").prepend("<li><strong>Done</strong></li>");
             }
         },
     });
