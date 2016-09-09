@@ -5,7 +5,7 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.1.1
+ * @version 0.1.2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -313,7 +313,7 @@ class sendMailAjax extends PluginBase {
             'message'=>'',
         );
         $oSurvey=Survey::model()->findByPk($this->iSurveyId);
-        Yii::app()->setConfig('surveyID',$iSurvey);
+        Yii::app()->setConfig('surveyID',$this->iSurveyId);
         $aSurveyLangs = $oSurvey->getAllLanguages();
         $aTokenFields = getTokenFieldsAndNames($this->iSurveyId, true);
         $bHtml = $oSurvey->htmlemail=='Y';

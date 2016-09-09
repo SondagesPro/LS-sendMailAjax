@@ -13,9 +13,9 @@ Allow to send token email one by one with one click.
 
 ## Home page & Copyright
 - HomePage <http://extensions.sondages.pro/>
-- Copyright © 2015 Denis Chenu <http://sondages.pro>
+- Copyright © 2015-2016 Denis Chenu <http://sondages.pro>
 - Licence : GNU General Affero Public License <https://www.gnu.org/licenses/agpl-3.0.html>
 
 ## Support
-- Issues <https://gitlab.com/Shnoulle-LimeSurvey-plugin/sendMailAjax/issues>
+- Issues <https://framagit.org/SondagePro-LimeSurvey-plugin/sendMailAjax/issues>
 - Professional support <http://extensions.sondages.pro/1>
