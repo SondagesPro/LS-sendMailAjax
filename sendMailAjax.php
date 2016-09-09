@@ -5,7 +5,7 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.2.0
+ * @version 0.2.1
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -329,10 +329,12 @@ class sendMailAjax extends PluginBase {
             case 'invite':
                 $sSubject=$oSurveyLanguage->surveyls_email_invite_subj;
                 $sMessage=$oSurveyLanguage->surveyls_email_invite;
+                $template='invitation';
                 break;
             case 'remind':
                 $sSubject=$oSurveyLanguage->surveyls_email_remind_subj;
                 $sMessage=$oSurveyLanguage->surveyls_email_remind;
+                $template='reminder';
                 break;
             default:
                 throw new CHttpException(500);
@@ -412,7 +414,9 @@ class sendMailAjax extends PluginBase {
         );
         global $maildebug;
         $event = new PluginEvent('beforeTokenEmail');
-        $event->set('type', $sType);
+        $event->set('survey', $this->iSurveyId);
+        $event->set('type', $template);
+        $event->set('model', $sType);
         $event->set('subject', $sSubject);
         $event->set('to', $to);
         $event->set('body', $sMessage);
