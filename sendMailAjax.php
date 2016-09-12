@@ -3,9 +3,9 @@
  * sendMailAjax Plugin for LimeSurvey
  *
  * @author Denis Chenu <denis@sondages.pro>
- * @copyright 2015 Denis Chenu <http://sondages.pro>
+ * @copyright 2015-2016 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.2.1
+ * @version 0.2.2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -98,11 +98,17 @@ class sendMailAjax extends PluginBase {
                   'type'=>'int',// float is not fixed in 2.05
                   'label'=>'Minimum day after last email (invite or remind).',
                   'current' => $this->get('mindaydelay', 'Survey', $iSurveyId,'1'),
+                    'htmlOptions'=>array(
+                      'class'=>'form-control'
+                    ),
                 ),
                 'maxremind'=>array(
                   'type'=>'int',
                   'label'=>'Don’t send remind if user have already receive X reminder',
                   'current' => $this->get('maxremind', 'Survey', $iSurveyId,''),
+                    'htmlOptions'=>array(
+                      'class'=>'form-control'
+                    ),
                 ),
                 'launchinvite'=>array(
                   'type'=>'link',
@@ -110,13 +116,13 @@ class sendMailAjax extends PluginBase {
                   'htmlOptions'=>array(
                     'title'=>gt('Send email invitation'),
                   ),
-                  'class'=>'popup-sendmailajax',
-                  'link'=>$this->api->createUrl('plugins/direct', array('plugin' => get_class(),'surveyid'=>$iSurveyId,'function' => 'confirm','type'=>'invite'))
+                  'class'=>'popup-sendmailajax btn-default',
+                  'link'=>$this->api->createUrl('plugins/direct', array('plugin' => get_class(),'surveyid'=>$iSurveyId,'function' => 'confirm','type'=>'invite')),
                 ),
                 'launchremind'=>array(
                   'type'=>'link',
                   'label'=>gt('Send email reminder'),
-                  'class'=>'popup-sendmailajax',
+                  'class'=>'popup-sendmailajax btn-default',
                   'htmlOptions'=>array(
                     'title'=>gt('Send email reminder'),
                   ),
