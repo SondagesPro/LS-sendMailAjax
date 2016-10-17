@@ -5,7 +5,6 @@ $(document).on('click','a.popup-sendmailajax',function(event){
   delay=$("#plugin\\[sendMailAjax\\]\\[mindelay\\]").val();
   maxmail=$("#plugin\\[sendMailAjax\\]\\[maxemail\\]").val();
   */
-  dialogName = '#dialogsendmailajax';
   contentUrl=$(this).attr('href');
   dialogTitle=$(this).text();
   if($("#admin-notification-modal").length)// 2.50
@@ -15,6 +14,7 @@ $(document).on('click','a.popup-sendmailajax',function(event){
     $(modal).find('.modal-title').text(dialogTitle);
     $(modal).modal('show');
     $(modal).find(".modal-body").load(contentUrl);
+    $(modal).find(".modal-footer").append("<button type='button' class='btn btn-info hidden' data-send='true'>&nbsp;Stop</button>");
     $(modal).on('hidden.bs.modal', function (e) {
       $(modal).html(originalModalHtml);
     })
@@ -39,8 +39,15 @@ $(document).on('click','a.popup-sendmailajax',function(event){
 });
 $(document).on('click','a#launch-email',function(event){
   var jsonurl=$(this).attr('rel');
+  $("[data-send]").removeClass("hidden");
   $(this).closest('li').text($(this).text());
   loopSendEmail(jsonurl,0);
+});
+$(document).on('click','[data-send]',function(event){
+  $(this).html("Stopped");
+  $(this).attr("data-send",'stop');
+  $(".sendmailajax-list").prepend("<li><strong>Stop</strong></li>");
+  $(this).addClass('hidden');
 });
 /*
 * Used to update response one by one
@@ -48,7 +55,7 @@ $(document).on('click','a#launch-email',function(event){
 * @param {integer} tokenid : The token id
 */
 function loopSendEmail(jsonurl,tokenid) {
-  if($(".sendmailajax-list").length>0)// Don't send if user click on 'Cancel'
+  if($(".sendmailajax-list").length>0 && $("[data-send='stop']").length==0)// Don't send if user click on 'Cancel'
   {
     $.ajax({
       url: jsonurl,
