@@ -18,15 +18,13 @@
  * GNU General Public License for more details.
  *
  */
-#use ls\pluginmanager\PluginBase;
-class sendMailAjax extends PluginBase {
+class sendMailAjax extends \ls\pluginmanager\PluginBase {
   protected $storage = 'DbStorage';
 
   static protected $description = 'Send email one by one with ajax.';
   static protected $name = 'sendMailAjax';
 
-    public function __construct(PluginManager $manager, $id) {
-        parent::__construct($manager, $id);
+    public function init() {
         $this->subscribe('newDirectRequest');
         $this->subscribe('beforeSurveySettings');
         $this->subscribe('newSurveySettings');
