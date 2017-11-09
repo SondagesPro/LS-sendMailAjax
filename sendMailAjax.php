@@ -5,7 +5,7 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015-2016 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.3.2
+ * @version 0.3.3
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -250,12 +250,12 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         $oCriteria= new CDbCriteria();
         $oCriteria->condition="email IS NOT NULL and email != '' ";
         $oCriteria->addCondition("token IS NOT NULL and token != ''");
-        $oCriteria->addCondition("completed ='N' or completed=''");
+        $oCriteria->addCondition("completed ='N' OR completed='' OR completed IS NULL");
         $oCriteria->compare('emailstatus',"OK");
 
         $dToday=dateShift(date("Y-m-d H:i:s"),"Y-m-d H:i:s", Yii::app()->getConfig("timeadjust"));
-        $oCriteria->addCondition("validfrom < :validfrom OR validfrom='' or validfrom IS NULL");
-        $oCriteria->addCondition("validuntil > :validuntil OR validuntil='' or validuntil IS NULL");
+        $oCriteria->addCondition("validfrom < :validfrom OR validfrom IS NULL");
+        $oCriteria->addCondition("validuntil > :validuntil OR validuntil IS NULL");
 
         $oCriteria->compare('usesleft',">0");
         $oCriteria->addCondition("blacklisted IS NULL OR blacklisted='' ");
@@ -263,10 +263,10 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         switch ($sType)
         {
             case 'invite':
-                $oCriteria->addCondition("sent ='N' or sent=''");
+                $oCriteria->addCondition("sent ='N' OR sent='' OR sent IS NULL");
                 break;
             case 'remind':
-                $oCriteria->addCondition("sent !='N' or sent!=''");
+                $oCriteria->addCondition("sent !='N' AND sent!='' AND sent IS NOT NULL");
                 $iMinDayDelay=intval($this->get('mindaydelay', 'Survey', $this->iSurveyId,'1'));
                 $iMaxRemind=intval($this->get('maxremind', 'Survey', $this->iSurveyId,null));
                 if($iMinDayDelay>0)
