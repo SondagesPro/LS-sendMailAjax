@@ -1,0 +1,15 @@
+{
+    "name": "SondagesPro/sendMailAjax",
+    "description": "Allow to send token email one by one with one click.",
+    "type": "limesurvey-plugin",
+    "homepage": "https://github.com/SondagesPro/LS-sendMailAjax",
+    "license": "AGPL-3.0+",
+    "authors": [
+        {
+            "name": "Denis Chenu",
+            "email": "contact@sondages.pro"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {}
+}
