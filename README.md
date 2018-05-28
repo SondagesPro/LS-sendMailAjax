@@ -17,5 +17,5 @@ Allow to send token email one by one with one click.
 - Licence : GNU General Affero Public License <https://www.gnu.org/licenses/agpl-3.0.html>
 
 ## Support
-- Issues <https://framagit.org/SondagePro-LimeSurvey-plugin/sendMailAjax/issues>
+- Issues <https://gitlab.com/SondagesPro/sendMailAjax/issues>
 - Professional support <http://extensions.sondages.pro/1>
