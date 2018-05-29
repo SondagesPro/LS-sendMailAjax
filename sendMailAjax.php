@@ -5,7 +5,7 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015-2016 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 1.0.0
+ * @version 1.0.1
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -340,9 +340,9 @@ class sendMailAjax extends PluginBase {
         }
         $sSubject=preg_replace("/{TOKEN:([A-Z0-9_]+)}/","{"."$1"."}",$sSubject);
         $sMessage=preg_replace("/{TOKEN:([A-Z0-9_]+)}/","{"."$1"."}",$sMessage);
-        if ($bHtml)
+        if ($bHtml) {
             $sMessage = html_entity_decode($sMessage, ENT_QUOTES, Yii::app()->getConfig("emailcharset"));
-
+        }
         $to = array();
         $aEmailaddresses = explode(';', $oToken->email);
         foreach ($aEmailaddresses as $sEmailaddress)
@@ -352,8 +352,7 @@ class sendMailAjax extends PluginBase {
         $from = "{$oSurvey->admin} <{$oSurvey->adminemail}>";
 
         $aReplace=array();
-        foreach($oToken->attributes as $key=>$value)
-        {
+        foreach($oToken->attributes as $key=>$value) {
             $aReplace[strtoupper($key)]=$value;
         }
         $aReplace["ADMINNAME"] = $oSurvey->admin;
@@ -394,16 +393,20 @@ class sendMailAjax extends PluginBase {
                 LimeExpressionManager::singleton()->loadTokenInformation($this->iSurveyId, $oToken->token);
                 foreach($aAttachments as $aAttachment)
                 {
-                    if (LimeExpressionManager::singleton()->ProcessRelevance($aAttachment['relevance']))
-                    {
+                    if (LimeExpressionManager::singleton()->ProcessRelevance($aAttachment['relevance'])) {
                         $aRelevantAttachments[] = $aAttachment['url'];
                     }
                 }
                 // Why not use LimeExpressionManager::ProcessString($sSubject, NULL, $aReplace, false, 2, 1, false, false, true); ?
             }
         }
-        $sSubject=LimeExpressionManager::ProcessString($sSubject, NULL, $aReplace, false, 2, 1, false, false, true);
-        $sMessage=LimeExpressionManager::ProcessString($sMessage, NULL, $aReplace, false, 2, 1, false, false, true);
+        if(floatval(Yii::app()->getconfig('versionnumber')) < 3) {
+            $sSubject=LimeExpressionManager::ProcessString($sSubject, NULL, $aReplace, false, 2, 1, false, false, true);
+            $sMessage=LimeExpressionManager::ProcessString($sMessage, NULL, $aReplace, false, 2, 1, false, false, true);
+        } else {
+            $sSubject=LimeExpressionManager::ProcessString($sSubject, null, $aReplace, 2, 1, false, false, true);
+            $sMessage=LimeExpressionManager::ProcessString($sMessage, null, $aReplace, 2, 1, false, false, true);
+        }
         $sSubject=str_replace (array_keys($aBareBone),$aBareBone,$sSubject);
         $sMessage=str_replace (array_keys($aBareBone),$aBareBone,$sMessage);
 
