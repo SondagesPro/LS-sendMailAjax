@@ -5,7 +5,7 @@
  * @author Denis Chenu <denis@sondages.pro>
  * @copyright 2015-2016 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 0.3.4
+ * @version 1.0.0
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  */
-class sendMailAjax extends \ls\pluginmanager\PluginBase {
+class sendMailAjax extends PluginBase {
   protected $storage = 'DbStorage';
 
   static protected $description = 'Send email one by one with ajax.';
@@ -28,6 +28,7 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         $this->subscribe('newDirectRequest');
         $this->subscribe('beforeSurveySettings');
         $this->subscribe('newSurveySettings');
+        $this->subscribe('beforeControllerAction');
     }
 
     /**
@@ -82,12 +83,7 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         $oEvent = $this->event;
         $iSurveyId=$oEvent->get('survey');
         $oSurvey=Survey::model()->findByPk($iSurveyId);
-        if(tableExists('{{tokens_' . $iSurveyId . '}}') && Permission::model()->hasSurveyPermission($iSurveyId, 'tokens', 'update') && $oSurvey->active=="Y")
-        {
-            $jsUrl = Yii::app()->assetManager->publish(dirname(__FILE__) . '/assets/sendMailAjax.js');
-            App()->getClientScript()->registerScriptFile($jsUrl);
-            $cssUrl = Yii::app()->assetManager->publish(dirname(__FILE__) . '/assets/sendMailAjax.css');
-            App()->getClientScript()->registerCssFile($cssUrl);
+        if(tableExists('{{tokens_' . $iSurveyId . '}}') && Permission::model()->hasSurveyPermission($iSurveyId, 'tokens', 'update') && $oSurvey->active=="Y") {
 
             $oEvent->set("surveysettings.{$this->id}", array(
               'name' => get_class($this),
@@ -140,7 +136,6 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         $aSettings=$event->get('settings');
         $aSettings['mindaydelay']=(isset($aSettings['mindaydelay']) && intval($aSettings['mindaydelay'])>=0) ? intval($aSettings['mindaydelay']) : 1;
         $aSettings['maxremind']=(isset($aSettings['maxremind']) && intval($aSettings['maxremind'])>=0) ? intval($aSettings['maxremind']) : 0;
-
         foreach ($aSettings as $name => $value)
         {
             $this->set($name, $value, 'Survey', $event->get('survey'));
@@ -469,4 +464,30 @@ class sendMailAjax extends \ls\pluginmanager\PluginBase {
         return $returnData;
     }
 
+    /**
+     * @see event beforeControllerAction
+     * Adding needed package
+     */
+    public function beforeControllerAction()
+    {
+        if(!$this->getEvent()->get('controller') == 'admin' || !$this->getEvent()->get('action') == 'survey') {
+            return;
+        }
+        /* Quit if is done */
+        if(array_key_exists(get_class($this),Yii::app()->getClientScript()->packages)) {
+            return;
+        }
+        /* Add package if not exist (allow to use another one in config) */
+        if(!Yii::app()->clientScript->hasPackage(get_class($this))) {
+            Yii::setPathOfAlias(get_class($this),dirname(__FILE__));
+            Yii::app()->clientScript->addPackage(get_class($this), array(
+                'basePath'    => get_class($this).'.assets',
+                'css'         => array(get_class($this).'.css'),
+                'js'          => array(get_class($this).'.js'),
+                'depends'      =>array( 'adminbasicjs'),
+            ));
+        }
+        /* Registering the package */
+        Yii::app()->getClientScript()->registerPackage(get_class($this));
+    }
 }

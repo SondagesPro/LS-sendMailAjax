@@ -7,8 +7,7 @@ $(document).on('click','a.popup-sendmailajax',function(event){
   */
   contentUrl=$(this).attr('href');
   dialogTitle=$(this).text();
-  if($("#admin-notification-modal").length)// 2.50
-  {
+  if($("#admin-notification-modal").length) { // 2.50
     modal=$("#admin-notification-modal");
     originalModalHtml=$("#admin-notification-modal").html();
     $(modal).find('.modal-title').text(dialogTitle);
@@ -17,25 +16,24 @@ $(document).on('click','a.popup-sendmailajax',function(event){
     $(modal).find(".modal-footer").append("<button type='button' class='btn btn-info hidden' data-send='true'>&nbsp;Stop</button>");
     $(modal).on('hidden.bs.modal', function (e) {
       $(modal).html(originalModalHtml);
-    })
-  }
-  else // 2.06 or old 2.50
-  {
-    $('#sendmailajax').dialog('destroy').remove();
-    $("<div id='sendmailajax'>").dialog({
-        modal: true,
-        open: function ()
-        {
-            $(this).load(contentUrl);
-        },
-        title: dialogTitle,
-        dialogClass: "dialog-sendmailajax",
-        buttons: { Cancel: function() { $(this).dialog("close"); } },
-        close: function () {
-            $(this).remove();
-        }
     });
+    return;
   }
+  // 2.06 or old 2.50
+  $('#sendmailajax').dialog('destroy').remove();
+  $("<div id='sendmailajax'>").dialog({
+      modal: true,
+      open: function ()
+      {
+          $(this).load(contentUrl);
+      },
+      title: dialogTitle,
+      dialogClass: "dialog-sendmailajax",
+      buttons: { Cancel: function() { $(this).dialog("close"); } },
+      close: function () {
+          $(this).remove();
+      }
+  });
 });
 $(document).on('click','a#launch-email',function(event){
   var jsonurl=$(this).attr('rel');
@@ -49,6 +47,7 @@ $(document).on('click','[data-send]',function(event){
   $(".sendmailajax-list").prepend("<li><strong>Stop</strong></li>");
   $(this).addClass('hidden');
 });
+
 /*
 * Used to update response one by one
 * @param {string} jsonurl : The json Url to request
