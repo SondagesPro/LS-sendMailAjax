@@ -1,6 +1,15 @@
 # Send token email via Ajax
 Allow to send token email one by one with one click.
 
+## Usage
+
+On survey settings, plugin part : you have 2 buttons to send invitation or reminder, this open a new dialog box where you can send email messages one by one.
+You must leave your browser window open, and you see each email sended. Email are sended one by one and tested just before sending (for example : if an user do the survey after you click on te button).
+
+You can stop the process using the Stop button. At end this button are updated to show Done.
+
+You can set the parameters for reminders, if you update this parameters, remind to save survey settings.
+
 ## Installation
 
 ### Via GIT
