@@ -13,7 +13,7 @@ You can set the parameters for reminders, if you update this parameters, remind 
 ## Installation
 
 ### Via GIT
-- Go to your LimeSurvey Directory (version up to 2.05)
+- Go to your LimeSurvey Directory (version up to 2.65.1)
 - Clone in plugins/sendMailAjax directory
 
 ### Via ZIP dowload
@@ -22,7 +22,7 @@ You can set the parameters for reminders, if you update this parameters, remind 
 
 ## Home page & Copyright
 - HomePage <http://extensions.sondages.pro/sendmailajax>
-- Copyright © 2015-2016 Denis Chenu <http://sondages.pro>
+- Copyright © 2015-2018 Denis Chenu <http://sondages.pro>
 - Licence : GNU General Affero Public License <https://www.gnu.org/licenses/agpl-3.0.html>
 
 ## Support
