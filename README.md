@@ -1,6 +1,8 @@
 # Send token email via Ajax
 Allow to send token email one by one with one click.
 
+Use this version if you are on LimeSurvey 2.65.1 and lesser version
+
 ## Installation
 
 ### Via GIT
@@ -17,5 +19,5 @@ Allow to send token email one by one with one click.
 - Licence : GNU General Affero Public License <https://www.gnu.org/licenses/agpl-3.0.html>
 
 ## Support
-- Issues <https://framagit.org/SondagePro-LimeSurvey-plugin/sendMailAjax/issues>
+- Issues <https://gitlab.com/SondagesPro/mailing/sendMailAjax/issues>
 - Professional support <http://extensions.sondages.pro/1>
