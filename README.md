@@ -10,6 +10,8 @@ You can stop the process using the Stop button. At end this button are updated t
 
 You can set the parameters for reminders, if you update this parameters, remind to save survey settings.
 
+With LimeSurvey version lesser than 2.65.2, you can use [legacy](https://gitlab.com/SondagesPro/mailing/sendMailAjax/tree/legacy) branch.
+
 ## Installation
 
 ### Via GIT
