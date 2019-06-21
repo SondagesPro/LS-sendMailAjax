@@ -3,9 +3,9 @@
  * sendMailAjax Plugin for LimeSurvey
  *
  * @author Denis Chenu <denis@sondages.pro>
- * @copyright 2015-2016 Denis Chenu <http://sondages.pro>
+ * @copyright 2015-2019 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 1.0.1
+ * @version 1.0.2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -163,7 +163,7 @@ class sendMailAjax extends PluginBase {
                 break;
             case 'remind':
                 $renderData['confirminfo']=gt('Send email reminder');
-                $renderData['confirminfo'].=CHtml::tag('ul',array('class'=>'alert alert-info'),"",false);
+                $renderData['confirminfo'].=CHtml::tag('ul',array('class'=>'alert alert-info list-unstyled'),"",false);
                 $renderData['confirminfo'].=CHtml::tag('li',array(),sprintf(gt('Minimum day after last email : %s'),$this->get('mindaydelay', 'Survey', $this->iSurveyId,'1')));
                 $renderData['confirminfo'].=CHtml::tag('li',array(),sprintf(gt('Do not send remind if user have already receive %s reminder'),$this->get('maxremind', 'Survey', $this->iSurveyId,'0')));
                 $renderData['confirminfo'].=CHtml::closeTag('ul');
@@ -473,7 +473,7 @@ class sendMailAjax extends PluginBase {
      */
     public function beforeControllerAction()
     {
-        if(!$this->getEvent()->get('controller') == 'admin' || !$this->getEvent()->get('action') == 'survey') {
+        if($this->getEvent()->get('controller') != 'admin' || $this->getEvent()->get('action') != 'survey') {
             return;
         }
         /* Quit if is done */
