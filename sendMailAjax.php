@@ -3,9 +3,9 @@
  * sendMailAjax Plugin for LimeSurvey
  *
  * @author Denis Chenu <denis@sondages.pro>
- * @copyright 2015-2019 Denis Chenu <http://sondages.pro>
+ * @copyright 2015-2020 Denis Chenu <http://sondages.pro>
  * @license AGPL v3
- * @version 1.0.2
+ * @version 1.0.3
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,6 +43,9 @@ class sendMailAjax extends PluginBase {
     */
     public function newDirectRequest()
     {
+        if (!$this->getEvent()) {
+            throw new CHttpException(403);
+        }
         $oEvent = $this->event;
         $sFunction=$oEvent->get('function');
         if ($oEvent->get('target') != get_class())
@@ -80,6 +83,9 @@ class sendMailAjax extends PluginBase {
     */
     public function beforeSurveySettings()
     {
+        if (!$this->getEvent()) {
+            throw new CHttpException(403);
+        }
         $oEvent = $this->event;
         $iSurveyId=$oEvent->get('survey');
         $oSurvey=Survey::model()->findByPk($iSurveyId);
@@ -132,6 +138,9 @@ class sendMailAjax extends PluginBase {
     */
     public function newSurveySettings()
     {
+        if (!$this->getEvent()) {
+            throw new CHttpException(403);
+        }
         $event = $this->event;
         $aSettings=$event->get('settings');
         $aSettings['mindaydelay']=(isset($aSettings['mindaydelay']) && intval($aSettings['mindaydelay'])>=0) ? intval($aSettings['mindaydelay']) : 1;
@@ -473,6 +482,9 @@ class sendMailAjax extends PluginBase {
      */
     public function beforeControllerAction()
     {
+        if (!$this->getEvent()) {
+            throw new CHttpException(403);
+        }
         if($this->getEvent()->get('controller') != 'admin' || $this->getEvent()->get('action') != 'survey') {
             return;
         }
